@@ -1,0 +1,201 @@
+//Aşağıdaki kodlarla led, buton ve potansiyometre tanımlamalarını yaptım
+
+const int led2 = 2;
+const int led3 = 3;
+const int led4 = 4;
+const int led5 = 5;
+const int led6 = 6;
+const int led7 = 7;
+const int led8 = 8;
+const int led9 = 9;
+
+const int arttir = 10;
+const int azalt = 11;
+const int reset = 12;
+
+const int pot = A0;
+
+//sayac kodu ile butonlara bastıkça artacak ve azalacak değişkeni tanımladık
+int sayac = 0;
+
+//Aşağıda if/else için tanımladığımız değişkenler
+int durum_arttir;
+int durum_azalt;
+int durum_reset;
+int ayar;
+int son_ayar;
+
+void setup()
+{
+
+//8 tane LED'i çıkış olarak ayarladım. 2 tane butonu da giriş. Potansiyometre zaten analog girişte olduğu için herhangi bir input ataması yapmadım.
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(led4, OUTPUT);
+  pinMode(led5, OUTPUT);
+  pinMode(led6, OUTPUT);
+  pinMode(led7, OUTPUT);
+  pinMode(led8, OUTPUT);
+  pinMode(led9, OUTPUT);
+  pinMode(arttir, INPUT);
+  pinMode(azalt, INPUT);
+  
+  //Butonlara bastıkça nasıl değiştiğini görmek için aşağıdaki slash // işaretlerini silerek seri haberleşmeyi aktif hale getiriniz.
+  //Serial.begin(9600);
+}
+
+void loop()
+{
+  //Aşağıdaki map kodu ile 1 bytelık değer okuyan potansiyometreyi 8 bitlik değere okuması için 0-255 aralığına uyarladım. Çünkü ledlerin yanma aralığı 8 bit
+  ayar = analogRead(pot);
+  son_ayar = map(ayar,0,1023,0,255);
+  
+  /*bu kod ile ledlerin tamamının potansiyometre ile yanıp kısılmasını test ettim. Pasif halde kalabilir.
+  analogWrite(led2, son_ayar);
+  analogWrite(led3, son_ayar);
+  analogWrite(led4, son_ayar);
+  analogWrite(led5, son_ayar);
+  analogWrite(led6, son_ayar);
+  analogWrite(led7, son_ayar);
+  analogWrite(led8, son_ayar);
+  analogWrite(led9, son_ayar);
+  */
+  
+  //Aşağıdaki kodlarla butonları yeni bir değişkene tanımladım.
+  durum_arttir = digitalRead(arttir);
+  durum_azalt = digitalRead(azalt);
+  durum_reset = digitalRead(reset);
+  
+  //Bu eğer döngüsünde arttırma butonuna basılınca 6'ya kadar teker teker arttırmasını sağladım
+  if(durum_arttir == HIGH && sayac < 6)
+  {
+    sayac++;
+  	//Serial.println(sayac);
+    delay(200);
+    //Yukarı delay koymamın sebebi butona bir tıklayın hızlı bir şekilde arttırmayı engellemek
+  }
+  //Bu kodla azaltma butonuna basınca 0'a kadar azalmasını sağladım
+  else if(durum_azalt == HIGH && sayac > 0)
+  {
+   	sayac--;
+    //Serial.println(sayac);
+    delay(200);
+  }
+  //Bu şartta ise reset butonuna basınca sayacı 0'a eşitledim.
+  else if(durum_reset == HIGH)
+  {
+   	sayac = 0; 
+    //Serial.println(sayac);
+    delay(200);
+  }
+  //Aşağıda sayac 1'den 6'ya doğru gittikçe neler olacağını gösterdim.
+  switch(sayac)
+  {
+  
+    //Sayac 6 olunca bütün LEDler potansiyometrenin durumuna göre yanacak
+    case 6:
+    analogWrite(led2, son_ayar);
+    analogWrite(led3, son_ayar);
+    analogWrite(led4, son_ayar);
+    analogWrite(led5, son_ayar);
+    analogWrite(led6, son_ayar);
+    analogWrite(led7, son_ayar);
+    analogWrite(led8, son_ayar);
+    analogWrite(led9, son_ayar);
+    break;
+    
+    //sayac 1deyken LEDler hızlı bir şekilde yanıp yanıp sönecek
+    case 1:
+    
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,HIGH);
+    digitalWrite(led5,HIGH);
+    digitalWrite(led6,HIGH);
+    digitalWrite(led7,HIGH);
+    digitalWrite(led8,HIGH);
+    digitalWrite(led9,HIGH);
+    delay(50);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+    digitalWrite(led8,LOW);
+    digitalWrite(led9,LOW);
+    delay(50);
+    
+    break;
+    
+    //sayac 2deyken Ledler soldan sağa yanacak ve sönecek.
+    case 2:
+    
+    for(int b=2; b<10; b++)
+    {
+     	digitalWrite(b,HIGH);
+      	delay(50);
+      	digitalWrite(b,LOW);
+    }
+    
+    break;
+    
+    //Sayac 3teyken ledler soldan sağa yanacak sağdan sola sönecek
+    case 3:
+    
+    for(int b=2; b<10; b++)
+    {
+     	digitalWrite(b,HIGH);
+      	delay(50);
+    }
+    for(int b=9; b>1; b--)
+    {
+      	digitalWrite(b,LOW);
+      	delay(50);
+    }
+    
+    break;
+    
+    //sayac 4deyken Ledler sağdan sola yanacak ve sönecek.
+    case 4:
+    
+    for(int b=9; b>1; b--)
+    {
+     	digitalWrite(b,HIGH);
+      	delay(50);
+      	digitalWrite(b,LOW);
+    }
+    
+    break;
+    
+    //Sayac 5teyken ledler sağdan sola yanacak soldan sağa sönecek
+    case 5:
+    
+    for(int b=9; b>1; b--)
+    {
+     	digitalWrite(b,HIGH);
+      	delay(50);
+    }
+    for(int b=2; b<10; b++)
+    {
+      	digitalWrite(b,LOW);
+      	delay(50);
+    }
+    
+    break;
+    
+    //Diğer bütün durumlarda LEdler sönük kalacak
+    default:
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+    digitalWrite(led8,LOW);
+    digitalWrite(led9,LOW);
+    break;
+    
+  }
+  
+}
